@@ -208,79 +208,79 @@
                                                                                                             } ;
                                                                                                         wants = [ "network-online.target" ] ;
                                                                                                     } ;
+                                                                                            } ;
+                                                                            self-delete =
+                                                                                {
                                                                                     self-delete =
                                                                                         {
-                                                                                            self-delete =
+                                                                                            after = [ "network-online.target" ] ;
+                                                                                            ServiceConfig =
                                                                                                 {
-                                                                                                    after = [ "network-online.target" ] ;
-                                                                                                    ServiceConfig =
-                                                                                                        {
-                                                                                                            ExecStart =
-                                                                                                                let
-                                                                                                                    application =
-                                                                                                                        pkgs.writeShellApplication
-                                                                                                                            {
-                                                                                                                                name = "self-delete" ;
-                                                                                                                                runtimeInputs = [ pkgs.awscli pkgs.coreutils pkgs.flock ] ;
-                                                                                                                                text =
-                                                                                                                                    ''
-                                                                                                                                        mkdir --parents "${ config.promoter.directory }"
-                                                                                                                                        exec 104> "${ config.promoter.directory }/lock"
-                                                                                                                                        flock -x 104
-                                                                                                                                        NOW="$( date +%s )"
-                                                                                                                                        if [[ ! -f ${ config.promoter.directory }/timestamp ]]
-                                                                                                                                        then
-                                                                                                                                            touch ${ config.promoter.directory }/timestamp
-                                                                                                                                        fi
-                                                                                                                                        LAST_MODIFIED="$( stat --format %Y ${ config.promoter.directory }/timestamp )"
-                                                                                                                                        AGE=$(( NOW - LAST_MODIFIED ))
-                                                                                                                                        if [[ "$AGE" -gt ${ builtins.toString config.promoter.idle-timeout-seconds } ]]
-                                                                                                                                        then
-                                                                                                                                            INSTANCE_ID="$( cat "${ config.promoter.directory }/instance-id" )"
-                                                                                                                                            aws ec2 terminate-instances --instance-ids "$INSTANCE_ID"
-                                                                                                                                            aws ec2 wait instance-terminated  --instance-ids "$INSTANCE_ID"
-                                                                                                                                        fi
-                                                                                                                                    '' ;
-                                                                                                                            } ;
-                                                                                                                    in "${ application }/bin/self-delete" ;
-                                                                                                        } ;
-                                                                                                    wants = [ "network-online.target" ] ;
-                                                                                                } ;
-                                                                                        } ;
-                                                                                    in ( builtins.listToAttrs ( builtins.genList generator ( builtins.length config.promoter.polling ) ) ) // self-delete ;
-                                                                                } ;
-                                                                            timers.promoter =
-                                                                                let
-                                                                                    generator =
-                                                                                        index :
-                                                                                            let
-                                                                                                polling = builtins.elemAt config.promoter.polling index ;
-                                                                                                in
-                                                                                                    {
-                                                                                                        name = "promoter-poll-${ builtins.toString index }" ;
-                                                                                                        value =
-                                                                                                            {
-                                                                                                                wantedBy = [ "timers.target" ] ;
-                                                                                                                timerConfig =
+                                                                                                    ExecStart =
+                                                                                                        let
+                                                                                                            application =
+                                                                                                                pkgs.writeShellApplication
                                                                                                                     {
-                                                                                                                        OnBootSec = "${ builtins.toString polling.delay }s" ;
-                                                                                                                        OnUnitActiveSec = "${ builtins.toString polling.interval }s" ;
+                                                                                                                        name = "self-delete" ;
+                                                                                                                        runtimeInputs = [ pkgs.awscli pkgs.coreutils pkgs.flock ] ;
+                                                                                                                        text =
+                                                                                                                            ''
+                                                                                                                                mkdir --parents "${ config.promoter.directory }"
+                                                                                                                                exec 104> "${ config.promoter.directory }/lock"
+                                                                                                                                flock -x 104
+                                                                                                                                NOW="$( date +%s )"
+                                                                                                                                if [[ ! -f ${ config.promoter.directory }/timestamp ]]
+                                                                                                                                then
+                                                                                                                                    touch ${ config.promoter.directory }/timestamp
+                                                                                                                                fi
+                                                                                                                                LAST_MODIFIED="$( stat --format %Y ${ config.promoter.directory }/timestamp )"
+                                                                                                                                AGE=$(( NOW - LAST_MODIFIED ))
+                                                                                                                                if [[ "$AGE" -gt ${ builtins.toString config.promoter.idle-timeout-seconds } ]]
+                                                                                                                                then
+                                                                                                                                    INSTANCE_ID="$( cat "${ config.promoter.directory }/instance-id" )"
+                                                                                                                                    aws ec2 terminate-instances --instance-ids "$INSTANCE_ID"
+                                                                                                                                    aws ec2 wait instance-terminated  --instance-ids "$INSTANCE_ID"
+                                                                                                                                fi
+                                                                                                                            '' ;
                                                                                                                     } ;
-                                                                                                            };
+                                                                                                            in "${ application }/bin/self-delete" ;
+                                                                                                } ;
+                                                                                            wants = [ "network-online.target" ] ;
+                                                                                        } ;
+                                                                                } ;
+                                                                            in ( builtins.listToAttrs ( builtins.genList generator ( builtins.length config.promoter.polling ) ) ) // self-delete ;
+                                                                    timers =
+                                                                        let
+                                                                            generator =
+                                                                                index :
+                                                                                    let
+                                                                                        polling = builtins.elemAt config.promoter.polling index ;
+                                                                                        in
+                                                                                            {
+                                                                                                name = "promoter-poll-${ builtins.toString index }" ;
+                                                                                                value =
+                                                                                                    {
+                                                                                                        wantedBy = [ "timers.target" ] ;
+                                                                                                        timerConfig =
+                                                                                                            {
+                                                                                                                OnBootSec = "${ builtins.toString polling.delay }s" ;
+                                                                                                                OnUnitActiveSec = "${ builtins.toString polling.interval }s" ;
+                                                                                                            } ;
                                                                                                     } ;
+                                                                                            } ;
+                                                                            self-delete =
+                                                                                {
                                                                                     self-delete =
                                                                                         {
-                                                                                            self-delete =
+                                                                                            wantedBy = [ "timers.target" ] ;
+                                                                                            timerConfig =
                                                                                                 {
-                                                                                                    wantedBy = [ "timers.target" ] ;
-                                                                                                    timerConfig =
-                                                                                                        {
-                                                                                                            OnBootSec = "${ builtins.toString config.promoter.idle-timeout-seconds }s" ;
-                                                                                                            OnUnitActiveSec = "${ builtins.toString config.promoter.idle-timeout-seconds }s" ;
-                                                                                                        } ;
+                                                                                                    OnBootSec = "${ builtins.toString config.promoter.idle-timeout-seconds }s" ;
+                                                                                                    OnUnitActiveSec = "${ builtins.toString config.promoter.idle-timeout-seconds }s" ;
                                                                                                 } ;
                                                                                         } ;
-                                                                                    in ( builtins.listToAttrs ( builtins.genList generator ( builtins.length config.promoter.polling ) ) ) // self-delete ;
+                                                                                } ;
+                                                                            in ( builtins.listToAttrs ( builtins.genList generator ( builtins.length config.promoter.polling ) ) ) // self-delete ;
                                                                 } ;
                                                             options.promoter =
                                                                 {
