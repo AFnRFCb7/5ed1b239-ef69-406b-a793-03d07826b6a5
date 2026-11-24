@@ -282,6 +282,23 @@
                                                         } ;
                                                     options.promoter =
                                                         {
+                                                            bin =
+                                                                {
+                                                                    self-delete =
+                                                                        lib.mkOption
+                                                                            {
+                                                                                default =
+                                                                                    pkgs.writeShellApplication
+                                                                                        {
+                                                                                            name = "se" ;
+                                                                                            runtimeInputs = [ ] ;
+                                                                                            text =
+                                                                                                ''
+                                                                                                '' ;
+                                                                                        } ;
+                                                                                type = lib.types.package ;
+                                                                            } ;
+                                                                } ;
                                                             directory = lib.mkOption { default = "/root/working/promoter" ; type = lib.types.str ; } ;
                                                             idle-timeout-seconds = lib.mkOption { default = 60 * 60 ; type = lib.types.int ; } ;
                                                             polling =
@@ -320,7 +337,7 @@
                                                 } ;
                             in
                                 {
-                                    checks = [ ] ;
+                                    checks = { } ;
                                     implementation = output implementation ;
                                 } ;
             } ;
