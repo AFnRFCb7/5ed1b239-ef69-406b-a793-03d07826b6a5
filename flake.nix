@@ -27,7 +27,7 @@
                                                                                         value =
                                                                                             {
                                                                                                 after = [ "network-online.target" ] ;
-                                                                                                ServiceConfig =
+                                                                                                serviceConfig =
                                                                                                     {
                                                                                                         Type = "oneshot" ;
                                                                                                         ExecStart =
@@ -212,7 +212,7 @@
                                                                             self-delete =
                                                                                 {
                                                                                     after = [ "network-online.target" ] ;
-                                                                                    ServiceConfig =
+                                                                                    serviceConfig =
                                                                                         {
                                                                                             ExecStart =
                                                                                                 let
