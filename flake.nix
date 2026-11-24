@@ -7,7 +7,7 @@
                     { input ? x : x , output ? x : x } :
                         let
                             implementation =
-                                { ... } @module :
+                                { pkgs , ... } @module :
                                     let
                                         inputed = input module ;
                                         in
