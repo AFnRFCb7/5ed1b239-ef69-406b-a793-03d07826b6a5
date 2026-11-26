@@ -254,6 +254,7 @@
                                                                                                                                             mapper =
                                                                                                                                                 name : value :
                                                                                                                                                     ''
+                                                                                                                                                        # shellcheck disable=SC2129
                                                                                                                                                         jq '.' ${ builtins.toFile "repository.json" ( builtins.toJSON { name = name ; value = value ; } ) } | repository | yq eval --prettyPrint '[.]' >> ${ config.promoter.directory }/log.yaml
                                                                                                                                                     '' ;
                                                                                                                                             in builtins.concatStringsSep "\n" ( builtins.attrValues ( builtins.mapAttrs mapper config.promoter.polling ) ) ;
