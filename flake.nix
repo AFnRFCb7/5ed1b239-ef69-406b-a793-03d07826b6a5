@@ -340,7 +340,10 @@
                                                 } ;
                             in
                                 {
-                                    checks = { } ;
+                                    checks =
+                                        {
+                                                failure = pkgs.runCommand "failure" { } ''exit 1'' ;
+                                        } ;
                                     implementation = output implementation ;
                                 } ;
             } ;
