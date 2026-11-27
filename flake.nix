@@ -110,7 +110,7 @@
                                                                                                                                                                                                         AFTER="$( date +%s )"
                                                                                                                                                                                                         ELAPSED=$(( AFTER - BEFORE ))
                                                                                                                                                                                                         jq --null-input --argjson AFTER "$AFTER" --argjson ELAPSED "$ELAPSED" --argjson STATUS "$STATUS" '{ "after" : $AFTER , "elapsed" : $ELAPSED , "status" : $STATUS }' | yq eval --prettyPrint '.' >> "$LOG"
-                                                                                                                                                                                                        yq eval --prettyPrint '{ strenv(CHECK) : . }' "$LOG"
+                                                                                                                                                                                                        yq eval --prettyPrint '[ { "name" : strenv(CHECK) , "value" : . } ]' "$LOG"
                                                                                                                                                                                                         rm "$LOG"
                                                                                                                                                                                                         if [[ "$STATUS" == "false" ]]
                                                                                                                                                                                                         then
@@ -225,11 +225,11 @@
                                                                                                                                                                 git config user.name "$NAME"
                                                                                                                                                                 git config remote.origin.prune true
                                                                                                                                                                 URL="$( jq --raw-output '.value.url' "$JSON" )"
-                                                                                                                                                                if ! git remote get-url origin
+                                                                                                                                                                if git remote get-url origin > /dev/null 2>&1
                                                                                                                                                                 then
-                                                                                                                                                                    git remote add origin "$URL"
-                                                                                                                                                                else
                                                                                                                                                                     git remote set-url origin "$URL"
+                                                                                                                                                                else
+                                                                                                                                                                    git remote add origin "$URL"
                                                                                                                                                                 fi
                                                                                                                                                                 PREPARATION="$( jq --raw-output '.value.branch.preparation' "$JSON" )"
                                                                                                                                                                 TARGET="$( jq --raw-output '.value.branch.target' "$JSON" )"
@@ -244,7 +244,7 @@
                                                                                                                                                                     while IFS= read -r BRANCH
                                                                                                                                                                     do
                                                                                                                                                                         export BRANCH
-                                                                                                                                                                        branch "$BRANCH" | yq eval --prettyPrint '{ strenv(BRANCH) : . }' >> "$LOG"
+                                                                                                                                                                        branch "$BRANCH" | yq eval --prettyPrint '[ { "name" : strenv(BRANCH) , "value" : . } ]' >> "$LOG"
                                                                                                                                                                     done < <( git for-each-ref --format='%(refname:strip=3)' "refs/remotes/origin/$PREPARATION*" )
                                                                                                                                                                 fi
                                                                                                                                                                 AFTER="$( date +%s )"
