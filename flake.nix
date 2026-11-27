@@ -41,6 +41,26 @@
                                                                                         } ;
                                                                                 type = lib.types.package ;
                                                                             } ;
+                                                                    log =
+                                                                        lib.mkOption
+                                                                            {
+                                                                                default =
+                                                                                    pkgs.writeShellApplication
+                                                                                        {
+                                                                                            name = "log" ;
+                                                                                            runtimeInputs = [ pkgs.yq-go ] ;
+                                                                                            text =
+                                                                                                ''
+                                                                                                    yq eval --prettyPrint yq eval '
+                                                                                                                              map(
+                                                                                                                                  map(select((.branches // []) | length > 0))
+                                                                                                                                  | select(length > 0)
+                                                                                                                              )
+                                                                                                                          ' /run/promoter/temporary/pk0OpKzd.yaml
+                                                                                                '' ;
+                                                                                        } ;
+                                                                                type = lib.types.package ;
+                                                                            } ;
                                                                     poll =
                                                                         lib.mkOption
                                                                             {
@@ -365,7 +385,7 @@
                                 {
                                     checks =
                                         {
-                                            failure = builtins.throw "2244511587385616" ;
+                                            failure = builtins.throw "2351861224366759" ;
                                         } ;
                                     implementation = output implementation ;
                                 } ;
