@@ -240,7 +240,7 @@
                                                                                                                                                                 export FAILURE
                                                                                                                                                                 if git fetch origin "+refs/heads/$PREPARATION*:refs/remotes/origin/$PREPARATION*" 2>&1 | jq --raw-input --slurp '{ "git-fetch" : . }' | yq eval --prettyPrint '.' >> "$LOG"
                                                                                                                                                                 then
-                                                                                                                                                                    jq --null-input '{ "branches" : { } }' | yq eval --prettyPrint '.' >> "$LOG"
+                                                                                                                                                                    jq --null-input '{ "branches" : [ ] }' | yq eval --prettyPrint '.' >> "$LOG"
                                                                                                                                                                     while IFS= read -r BRANCH
                                                                                                                                                                     do
                                                                                                                                                                         export BRANCH
@@ -359,7 +359,7 @@
                                 {
                                     checks =
                                         {
-                                            # failure = builtins.throw "3455927813267989" ;
+                                            failure = builtins.throw "2244511587385616" ;
                                         } ;
                                     implementation = output implementation ;
                                 } ;
