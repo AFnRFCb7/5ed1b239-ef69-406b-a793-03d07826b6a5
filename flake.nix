@@ -238,11 +238,13 @@
                                                                                                                                                                 export SUCCESS
                                                                                                                                                                 FAILURE="$( jq --raw-output '.value.branch.failure' "$JSON" )"
                                                                                                                                                                 export FAILURE
+                                                                                                                                                                REPORT=false
                                                                                                                                                                 if git fetch origin "+refs/heads/$PREPARATION*:refs/remotes/origin/$PREPARATION*" 2>&1 | jq --raw-input --slurp '{ "git-fetch" : . }' | yq eval --prettyPrint '.' >> "$LOG"
                                                                                                                                                                 then
                                                                                                                                                                     jq --null-input '{ "branches" : { } }' | yq eval --prettyPrint '.' >> "$LOG"
                                                                                                                                                                     while IFS= read -r BRANCH
                                                                                                                                                                     do
+                                                                                                                                                                        REPORT=true
                                                                                                                                                                         export BRANCH
                                                                                                                                                                         branch "$BRANCH" | yq eval --prettyPrint '[ { "name" : strenv(BRANCH) , "value" : . } ]' >> "$LOG"
                                                                                                                                                                     done < <( git for-each-ref --format='%(refname:strip=3)' "refs/remotes/origin/$PREPARATION*" )
@@ -250,7 +252,10 @@
                                                                                                                                                                 AFTER="$( date +%s )"
                                                                                                                                                                 ELAPSED=$(( AFTER - BEFORE ))
                                                                                                                                                                 jq --null-input --argjson AFTER "$AFTER" --argjson ELAPSED "$ELAPSED" '{ "after" : $AFTER , "elapsed" : $ELAPSED }' | yq eval --prettyPrint '.' >> "$LOG"
-                                                                                                                                                                yq eval --prettyPrint '[.]' "$LOG"
+                                                                                                                                                                if [[ "$REPORT" == "true" ]]
+                                                                                                                                                                then
+                                                                                                                                                                    yq eval --prettyPrint '[.]' "$LOG"
+                                                                                                                                                                fi
                                                                                                                                                                 # rm "$JSON" "$LOG"
                                                                                                                                                                 echo 6773334943312796 >> "${ config.promoter.directory }/error.log"
                                                                                                                                                             '' ;
