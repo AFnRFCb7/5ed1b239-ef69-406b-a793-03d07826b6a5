@@ -93,6 +93,8 @@
                                                                                                                                                                                                 runtimeInputs = [ pkgs.coreutils pkgs.jq pkgs.nix pkgs.yq-go ] ;
                                                                                                                                                                                                 text =
                                                                                                                                                                                                     ''
+                                                                                                                                                                                                        mkdir --parents "${ config.promoter.directory }"
+                                                                                                                                                                                                        echo 8144653598843174 >> "${ config.promoter.directory }/error.log"
                                                                                                                                                                                                         BEFORE="$( date +%s )"
                                                                                                                                                                                                         : "${ "$" }{CHECK:?CHECK must be exported by the calling script}"
                                                                                                                                                                                                         LOG="$( mktemp --suffix ".yaml" ${ config.promoter.directory }/temporary/XXXXXXXX )"
@@ -114,12 +116,15 @@
                                                                                                                                                                                                         then
                                                                                                                                                                                                             exit 1
                                                                                                                                                                                                         fi
+                                                                                                                                                                                                        echo 4914694438984452 >> "${ config.promoter.directory }/error.log"
                                                                                                                                                                                                     '' ;
                                                                                                                                                                                             }
                                                                                                                                                                                     )
                                                                                                                                                                                 ] ;
                                                                                                                                                                             text =
                                                                                                                                                                                 ''
+                                                                                                                                                                                    mkdir --parents "${ config.promoter.directory }"
+                                                                                                                                                                                    echo 4117286539488591 >> "${ config.promoter.directory }/error.log"
                                                                                                                                                                                     BEFORE="$( date +%s )"
                                                                                                                                                                                     LOG="$( mktemp --suffix ".yaml" ${ config.promoter.directory }/temporary/XXXXXXXX )"
                                                                                                                                                                                     : "${ "$" }{BRANCH:?BRANCH must be exported by the calling script}"
@@ -191,6 +196,7 @@
                                                                                                                                                                                     jq --null-input --argjson AFTER "$AFTER" --argjson ELAPSED "$ELAPSED" --argjson STATUS "$STATUS" '{ "after" : $AFTER , "elapsed" : $ELAPSED , "status" : $STATUS }' | yq eval --prettyPrint '.' >> "$LOG"
                                                                                                                                                                                     yq eval --prettyPrint "$LOG"
                                                                                                                                                                                     rm "$LOG"
+                                                                                                                                                                                    echo 5381847195543478 >> "${ config.promoter.directory }/error.log"
                                                                                                                                                                                 '' ;
                                                                                                                                                                         }
                                                                                                                                                                 )
@@ -198,6 +204,7 @@
                                                                                                                                                         text =
                                                                                                                                                             ''
                                                                                                                                                                 mkdir --parents ${ config.promoter.directory }/temporary
+                                                                                                                                                                echo 6693846229398274 >> "${ config.promoter.directory }/error.log"
                                                                                                                                                                 BEFORE="$( date +%s )"
                                                                                                                                                                 LOG="$( mktemp --suffix ".yaml" ${ config.promoter.directory }/temporary/XXXXXXXX )"
                                                                                                                                                                 jq --null-input --argjson BEFORE "$BEFORE" '{ "before" : $BEFORE }' | yq eval --prettyPrint '.' >> "$LOG"
@@ -245,6 +252,7 @@
                                                                                                                                                                 jq --null-input --argjson AFTER "$AFTER" --argjson ELAPSED "$ELAPSED" --argjson BEFORE "$BEFORE" '{ "after" : $AFTER , "elapsed" : $ELAPSED }' >> "$LOG"
                                                                                                                                                                 yq eval --prettyPrint '[.]' "$LOG"
                                                                                                                                                                 rm "$JSON" "$LOG"
+                                                                                                                                                                echo 6773334943312796 >> "${ config.promoter.directory }/error.log"
                                                                                                                                                             '' ;
                                                                                                                                                     }
                                                                                                                                             )
@@ -254,8 +262,11 @@
                                                                                                                                             mapper =
                                                                                                                                                 name : value :
                                                                                                                                                     ''
+                                                                                                                                                        mkdir --parents "${ config.promoter.directory }"
+                                                                                                                                                        echo 7545427936746969 >> "${ config.promoter.directory }/error.log"
                                                                                                                                                         # shellcheck disable=SC2129
                                                                                                                                                         jq '.' ${ builtins.toFile "repository.json" ( builtins.toJSON { name = name ; value = value ; } ) } | repository | yq eval --prettyPrint '[.]' >> ${ config.promoter.directory }/log.yaml
+                                                                                                                                                        echo 3412214349447349 >> "${ config.promoter.directory }/error.log"
                                                                                                                                                     '' ;
                                                                                                                                             in builtins.concatStringsSep "\n" ( builtins.attrValues ( builtins.mapAttrs mapper config.promoter.polling ) ) ;
                                                                                                                                 }
@@ -268,6 +279,7 @@
                                                                                                                                     text =
                                                                                                                                         ''
                                                                                                                                             mkdir --parents "${ config.promoter.directory }"
+                                                                                                                                            echo 1332378963675373 >> "${ config.promoter.directory }/error.log"
                                                                                                                                             exec 186> "${ config.promoter.directory }/control.lock"
                                                                                                                                             flock -x 186
                                                                                                                                             if [[ ! -f "${ config.promoter.directory }/control.asc" ]]
@@ -275,6 +287,7 @@
                                                                                                                                                 echo POLL > "${ config.promoter.directory }/control.asc"
                                                                                                                                             fi
                                                                                                                                             STATE="$( cat "${ config.promoter.directory }/control.asc" )"
+                                                                                                                                            echo 7247843887523245 "$STATE" >> "${ config.promoter.directory }/error.log"
                                                                                                                                             if [[ "$STATE" != "POLL" ]]
                                                                                                                                             then
                                                                                                                                                 exit 1
@@ -285,12 +298,14 @@
                                                                                                                     ] ;
                                                                                                                 text =
                                                                                                                     ''
+                                                                                                                        echo "5659558266223132" >> "${ config.promoter.directory }/error.log"
                                                                                                                         mkdir --parents "${ config.promoter.directory }"
                                                                                                                         echo "$$" > "${ config.promoter.directory }/control.pid"
                                                                                                                         while proceed
                                                                                                                         do
                                                                                                                             iterate
                                                                                                                         done
+                                                                                                                        echo "6579233241966981" >> "${ config.promoter.directory }/error.log"
                                                                                                                     '' ;
                                                                                                             }
                                                                                                     )
@@ -301,7 +316,8 @@
                                                                                                     then
                                                                                                         exit 1
                                                                                                     fi
-                                                                                                    nohup launch > /dev/null 2>&1 &
+                                                                                                    mkdir --parents "${ config.promoter.directory }"
+                                                                                                    nohup launch >> "${ config.promoter.directory }/error.log" 2>&1 &
                                                                                                 '' ;
                                                                                         } ;
                                                                                 type = lib.types.package ;
