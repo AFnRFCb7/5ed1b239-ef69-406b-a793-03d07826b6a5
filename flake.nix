@@ -249,7 +249,7 @@
                                                                                                                                                                 fi
                                                                                                                                                                 AFTER="$( date +%s )"
                                                                                                                                                                 ELAPSED=$(( AFTER - BEFORE ))
-                                                                                                                                                                jq --null-input --argjson AFTER "$AFTER" --argjson ELAPSED "$ELAPSED" --argjson BEFORE "$BEFORE" '{ "after" : $AFTER , "elapsed" : $ELAPSED }' >> "$LOG"
+                                                                                                                                                                jq --null-input --argjson AFTER "$AFTER" --argjson ELAPSED "$ELAPSED" '{ "after" : $AFTER , "elapsed" : $ELAPSED }' | yq eval --prettyPrint '.' >> "$LOG"
                                                                                                                                                                 yq eval --prettyPrint '[.]' "$LOG"
                                                                                                                                                                 rm "$JSON" "$LOG"
                                                                                                                                                                 echo 6773334943312796 >> "${ config.promoter.directory }/error.log"
